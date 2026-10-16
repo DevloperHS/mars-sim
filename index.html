@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Mars Terrain Simulation — Procedural Three.js WebGPU / WebGL</title>
+    <meta property="og:title" content="Mars Terrain Simulation — Procedural Three.js WebGPU / WebGL" />
+    <meta property="og:description" content="Real-time 100% procedural Martian terrain simulation in Three.js (WebGPU + WebGL fallback) inspired by NASA Curiosity and Perseverance imagery." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/og-image.png" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+
+    <!-- Sharp Rectangular Telemetry Loading Screen with Backdrop Blur (Zero pills or rounded corners) -->
+    <div id="loading-screen" class="loading-screen" role="status" aria-live="polite">
+      <div class="loading-panel">
+        <div class="loading-corner loading-tl"></div>
+        <div class="loading-corner loading-tr"></div>
+        <div class="loading-corner loading-bl"></div>
+        <div class="loading-corner loading-br"></div>
+
+        <div class="loading-header">
+          <span>MSL-CURIOSITY // SURFACE RECONSTRUCTION PIPELINE</span>
+          <span id="loading-percent">000%</span>
+        </div>
+
+        <div class="loading-title">GALE CRATER // BAGNOLD DUNE FIELD</div>
+
+        <div class="loading-track">
+          <div id="loading-bar-fill" class="loading-bar-fill"></div>
+        </div>
+
+        <div class="loading-meta">
+          <span id="loading-stage">INITIALIZING WEBGPU / TSL NODE GRAPH...</span>
+          <span id="loading-step">STEP 01/05</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NASA JPL / Mastcam-Z Digital Telemetry Overlay (Hidden by default; toggled via TAB key) -->
+    <div id="rover-hud" class="rover-hud" hidden>
+      <!-- Corner Optical Reticle Brackets -->
+      <div class="reticle-corner reticle-tl"></div>
+      <div class="reticle-corner reticle-tr"></div>
+      <div class="reticle-corner reticle-bl"></div>
+      <div class="reticle-corner reticle-br"></div>
+
+      <!-- Top Telemetry Readout Row -->
+      <div class="hud-row hud-row-top">
+        <div class="hud-block">
+          <div class="hud-line">MSL-CURIOSITY // MASTCAM-Z DIGITAL TELEMETRY</div>
+          <div class="hud-line">LOC: GALE CRATER / BAGNOLD DUNES (4.5895°S 137.4417°E)</div>
+          <div class="hud-line">SOL: 4128 &nbsp; LMST: <span id="hud-lmst">14:22:09</span> &nbsp; BACKEND: <span id="renderer-badge">INIT</span></div>
+          <div class="hud-line">CAM POS: <span id="hud-coords">X: -036.0m  Y: +007.7m  Z: +055.4m</span> &nbsp; HDG: <span id="hud-heading">142° SE</span></div>
+        </div>
+
+        <div class="hud-block hud-block-right">
+          <div class="hud-line">SOLAR ELEVATION: <span id="sun-angle-value">24.0°</span> &nbsp; AZIMUTH: 324.5°</div>
+          <div class="hud-line hud-solar-row">
+            <span>ELEV CTRL [ - / + ]:</span>
+            <input
+              type="range"
+              id="sun-slider"
+              min="4"
+              max="85"
+              step="0.5"
+              value="24"
+              aria-label="SOLAR ELEVATION"
+            />
+          </div>
+          <div class="hud-line">OPTICAL DEPTH (TAU): <span id="hud-tau">0.68</span> &nbsp; ATMO: SALMON DUST</div>
+          <div class="hud-line">HUD OVERLAY: [TAB] TOGGLE</div>
+        </div>
+      </div>
+
+      <!-- Bottom Telemetry & Keyboard Command Readout Row -->
+      <div class="hud-row hud-row-bottom">
+        <div class="hud-block">
+          <div class="hud-line">ACTIVE CAM PRESET [KEYS 1-6]: <span id="hud-preset-name">1:WIDE</span></div>
+          <div class="hud-line" id="camera-presets-readout" aria-label="Camera Presets">
+            <span class="preset-indicator active" data-preset="wide">[1:WIDE]</span>
+            <span class="preset-indicator" data-preset="low_dune">[2:DUNE]</span>
+            <span class="preset-indicator" data-preset="ripples">[3:RIPPLES]</span>
+            <span class="preset-indicator" data-preset="ridge">[4:RIDGE]</span>
+            <span class="preset-indicator" data-preset="elevated">[5:ELEVATED]</span>
+            <span class="preset-indicator" data-preset="horizon">[6:HORIZON]</span>
+          </div>
+          <div class="hud-line">CHEMCAM / APXS LOG: <span id="ai-tooltip-text">AEOLIAN BASALTIC SAND WITH HEMATITE OXIDE COATING. RIPPLE WAVELENGTH: 0.68M; SLIP-FACE: 31 DEG.</span></div>
+        </div>
+
+        <div class="hud-block hud-block-right">
+          <div class="hud-line">KEY TELEOP: [WASD / ARROWS] TRANSLATE &amp; ORBIT</div>
+          <div class="hud-line">KEY OPTICS: [1-6] MOVE TO ANGLE/PLACE &nbsp; [- / +] SUN ELEV &nbsp; [Q / E] ALTITUDE</div>
+          <div class="hud-line">KEY HUD: [TAB] HIDE/SHOW TELEMETRY</div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
