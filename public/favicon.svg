@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="mars-body" cx="0.36" cy="0.32" r="0.78">
+      <stop offset="0" stop-color="#f6b07a"/>
+      <stop offset="0.4" stop-color="#d9693b"/>
+      <stop offset="0.82" stop-color="#9a3a20"/>
+      <stop offset="1" stop-color="#5c1f12"/>
+    </radialGradient>
+    <radialGradient id="mars-shade" cx="0.3" cy="0.26" r="0.96">
+      <stop offset="0.52" stop-color="#160604" stop-opacity="0"/>
+      <stop offset="1" stop-color="#160604" stop-opacity="0.78"/>
+    </radialGradient>
+    <clipPath id="mars-disc">
+      <circle cx="32" cy="32" r="28"/>
+    </clipPath>
+  </defs>
+  <circle cx="32" cy="32" r="28" fill="url(#mars-body)"/>
+  <g clip-path="url(#mars-disc)">
+    <path fill="#6e2716" fill-opacity="0.55" d="M2 30c8-5 14 3 22-1s12 6 20 2 12-1 18 1v9c-7-2-11 3-19 1s-12 4-20 1-14 3-21 0z"/>
+    <path fill="#6e2716" fill-opacity="0.4" d="M13 49c3-3 8-2 13-2s9 2 14 0c3 0 3 3 0 4-5 2-9 0-14 1s-10 1-13-3z"/>
+    <ellipse cx="31" cy="4" rx="9" ry="5" fill="#fbe7d6" fill-opacity="0.88"/>
+    <circle cx="42" cy="19" r="4.2" fill="#a8452a"/>
+    <circle cx="42.6" cy="19.6" r="3.2" fill="#7f2f1b"/>
+    <circle cx="20" cy="42" r="3" fill="#a8452a"/>
+    <circle cx="20.5" cy="42.5" r="2.2" fill="#7f2f1b"/>
+    <circle cx="45" cy="45" r="2.2" fill="#8a3420"/>
+  </g>
+  <circle cx="32" cy="32" r="28" fill="url(#mars-shade)"/>
+  <circle cx="32" cy="32" r="27.4" fill="none" stroke="#ffd2ad" stroke-opacity="0.25" stroke-width="1.2"/>
+</svg>

@@ -1,0 +1,15 @@
+{
+  "name": "Mars Terrain Simulation",
+  "short_name": "Mars Sim",
+  "description": "Real-time procedural Martian terrain simulation in Three.js (WebGPU + WebGL fallback).",
+  "start_url": "/",
+  "display": "fullscreen",
+  "background_color": "#1a0d08",
+  "theme_color": "#1a0d08",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
