@@ -1,6 +1,6 @@
 /**
- * Deterministic 2D & 3D Simplex / Value-Gradient Noise and Martian Terrain Math
- * Everything generated in code — zero external assets.
+ * Deterministic 2D & 3D Simplex / Value-Gradient Noise and Dune Terrain Math
+ * Everything generated in code - zero external assets.
  */
 
 export function createRNG(seed = 1337) {
@@ -212,7 +212,7 @@ export function evaluateBarchanDune(phase) {
 /**
  * Evaluate full geological breakdown at world coordinates (x, z)
  */
-export function sampleMarsGeology(x, z) {
+export function sampleDuneGeology(x, z) {
   // 1. Domain warp for organic barchanoid crescent curvature
   const warpX = fbm2D(x * 0.0022 + 3.1, z * 0.0022 - 1.7, 3);
   const warpZ = fbm2D(x * 0.0022 - 5.4, z * 0.0022 + 4.2, 3);
@@ -299,22 +299,22 @@ export function sampleMarsGeology(x, z) {
 }
 
 /**
- * Master Martian Elevation Function
+ * Master Dune Elevation Function
  */
-export function sampleMarsElevation(x, z) {
-  return sampleMarsGeology(x, z).height;
+export function sampleDuneElevation(x, z) {
+  return sampleDuneGeology(x, z).height;
 }
 
 /**
  * Compute analytical/finite-difference surface normal, slope, curvature, and geology at (x, z)
  */
-export function sampleMarsSurfaceInfo(x, z, eps = 0.45) {
-  const geoC = sampleMarsGeology(x, z);
+export function sampleDuneSurfaceInfo(x, z, eps = 0.45) {
+  const geoC = sampleDuneGeology(x, z);
   const hC = geoC.height;
-  const hR = sampleMarsElevation(x + eps, z);
-  const hL = sampleMarsElevation(x - eps, z);
-  const hF = sampleMarsElevation(x, z + eps);
-  const hB = sampleMarsElevation(x, z - eps);
+  const hR = sampleDuneElevation(x + eps, z);
+  const hL = sampleDuneElevation(x - eps, z);
+  const hF = sampleDuneElevation(x, z + eps);
+  const hB = sampleDuneElevation(x, z - eps);
 
   const dx = (hR - hL) / (2.0 * eps);
   const dz = (hF - hB) / (2.0 * eps);

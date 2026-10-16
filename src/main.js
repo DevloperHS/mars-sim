@@ -1,54 +1,54 @@
 import * as THREE from 'three/webgpu';
 import { uniform } from 'three/tsl';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createMarsTerrain } from './terrain.js';
-import { createMarsRocks } from './rocks.js';
-import { createMarsSky } from './sky.js';
-import { sampleMarsElevation } from './noise.js';
+import { createDuneTerrain } from './terrain.js';
+import { createDuneRocks } from './rocks.js';
+import { createDuneSky } from './sky.js';
+import { sampleDuneElevation } from './noise.js';
 
 /**
- * Build the 6 fixed camera presets so each angle frames authentic Martian geological features:
+ * Build the 6 fixed camera presets so each angle frames authentic Dune geological features:
  * barchanoid dunes, wind-carved ripples, rocky interdune pavements, and distant stratified mesas.
  */
 function buildCameraPresets() {
   // 1. Wide establishing view: overlooking sweeping barchan dunes, rocky interdune troughs, and distant mountains
   const widePos = { x: -38, z: 54 };
-  const wideH = sampleMarsElevation(widePos.x, widePos.z);
+  const wideH = sampleDuneElevation(widePos.x, widePos.z);
 
   // 2. Low-angle dune view: dramatic low rover-mast perspective looking across wind-rippled sand and rocks up a barchan dune crest
   const lowPos = { x: -24, z: 38 };
-  const lowH = sampleMarsElevation(lowPos.x, lowPos.z);
-  const lowTargetH = sampleMarsElevation(10, -6);
+  const lowH = sampleDuneElevation(lowPos.x, lowPos.z);
+  const lowTargetH = sampleDuneElevation(10, -6);
 
   // 3. Close-up of wind ripples: 1.15m above sweeping wind-carved sand ripples & megaripples
   const ripplePos = { x: -18, z: 32 };
-  const rippleH = sampleMarsElevation(ripplePos.x, ripplePos.z);
-  const rippleTargetH = sampleMarsElevation(8, 12);
+  const rippleH = sampleDuneElevation(ripplePos.x, ripplePos.z);
+  const rippleTargetH = sampleDuneElevation(8, 12);
 
   // 4. Side-lit ridge view: grazing angle across sharp wind-carved dune crests and eroded outcrops
   const ridgePos = { x: 34, z: 28 };
-  const ridgeH = sampleMarsElevation(ridgePos.x, ridgePos.z);
-  const ridgeTargetH = sampleMarsElevation(-8, -18);
+  const ridgeH = sampleDuneElevation(ridgePos.x, ridgePos.z);
+  const ridgeTargetH = sampleDuneElevation(-8, -18);
 
   // 5. Elevated terrain view: high reconnaissance vantage overlooking multi-scale dune trains & bedrock pavements
   const elevPos = { x: -58, z: 62 };
   const elevLocalMaxH = Math.max(
-    sampleMarsElevation(elevPos.x, elevPos.z),
-    sampleMarsElevation(-35, 35),
-    sampleMarsElevation(-15, 10)
+    sampleDuneElevation(elevPos.x, elevPos.z),
+    sampleDuneElevation(-35, 35),
+    sampleDuneElevation(-15, 10)
   );
 
   // 6. Distant horizon view: framing foreground ridges fading into dusty salmon sky and Mount Sharp-like mesas
   const horPos = { x: 20, z: 45 };
-  const horH = sampleMarsElevation(horPos.x, horPos.z);
-  const horTargetH = sampleMarsElevation(-140, -180);
+  const horH = sampleDuneElevation(horPos.x, horPos.z);
+  const horTargetH = sampleDuneElevation(-140, -180);
 
   return {
     wide: {
       code: '1:WIDE',
       name: 'Wide Establishing View',
       position: new THREE.Vector3(widePos.x, wideH + 13.5, widePos.z),
-      target: new THREE.Vector3(18, sampleMarsElevation(18, -24) + 1.5, -24),
+      target: new THREE.Vector3(18, sampleDuneElevation(18, -24) + 1.5, -24),
       insight: 'WIDE PANORAMA OF BAGNOLD BARCHANOID DUNES. IRON-OXIDE DUST COATS WINDWARD SLOPES; MAFIC BASALT GRAINS COLLECT ON LEE SLIP-FACES.',
     },
     low_dune: {
@@ -76,7 +76,7 @@ function buildCameraPresets() {
       code: '5:ELEVATED',
       name: 'Elevated Terrain View',
       position: new THREE.Vector3(elevPos.x, elevLocalMaxH + 38.0, elevPos.z),
-      target: new THREE.Vector3(12, sampleMarsElevation(12, -16) - 2.0, -16),
+      target: new THREE.Vector3(12, sampleDuneElevation(12, -16) - 2.0, -16),
       insight: 'INGENUITY RECONNAISSANCE VANTAGE (+38M) SHOWING DUNE SINUOSITY, INTERDUNE BEDROCK PAVEMENTS, AND VENTIFACT FLOAT CLUSTERS.',
     },
     horizon: {
@@ -89,7 +89,7 @@ function buildCameraPresets() {
   };
 }
 
-async function initMarsSim() {
+async function initDuneSim() {
   const container = document.getElementById('canvas-container');
   const rendererBadge = document.getElementById('renderer-badge');
   const roverHud = document.getElementById('rover-hud');
@@ -174,7 +174,7 @@ async function initMarsSim() {
   scene.add(sunLight);
   scene.add(sunLight.target);
 
-  // Diffuse Martian Sky/Ground Hemisphere Fill Light (warm salmon sky + dark rust bounce)
+  // Diffuse Dune Sky/Ground Hemisphere Fill Light (warm salmon sky + dark rust bounce)
   const hemiLight = new THREE.HemisphereLight(0xe5a582, 0x592616, 0.85);
   scene.add(hemiLight);
 
@@ -184,17 +184,17 @@ async function initMarsSim() {
   scene.add(bounceLight);
 
   // Build Procedural Sky, Terrain, and Rocks
-  const skyMesh = createMarsSky(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform);
+  const skyMesh = createDuneSky(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform);
   scene.add(skyMesh);
 
   await updateLoadingProgress(58, 'GENERATING 560X560 BARCHAN DUNE & RIPPLE MESH...', 'STEP 03/05');
 
-  const terrainMesh = createMarsTerrain(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform);
+  const terrainMesh = createDuneTerrain(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform);
   scene.add(terrainMesh);
 
   await updateLoadingProgress(82, 'SCULPTING 1,920 FRACTURED BASALT VENTIFACTS...', 'STEP 04/05');
 
-  const rocksGroup = createMarsRocks(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform);
+  const rocksGroup = createDuneRocks(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform);
   scene.add(rocksGroup);
 
   // Camera Controls (Orbit + Smooth Zoom + Ground Collision Protection)
@@ -499,7 +499,7 @@ async function initMarsSim() {
   }
 
   // Expose deterministic automation hooks for screenshot capture & verification
-  window.__MARS_SIM__ = {
+  window.__DUNE_SIM__ = {
     presets,
     setCameraPreset(key, immediate = true) {
       idleEnabled = false;
@@ -590,8 +590,8 @@ async function initMarsSim() {
 
     controls.update();
 
-    // Prevent camera from clipping below procedural Martian terrain surface
-    const groundY = sampleMarsElevation(camera.position.x, camera.position.z);
+    // Prevent camera from clipping below procedural Dune terrain surface
+    const groundY = sampleDuneElevation(camera.position.x, camera.position.z);
     if (camera.position.y < groundY + 0.65) {
       camera.position.y = groundY + 0.65;
     }
@@ -614,4 +614,4 @@ async function initMarsSim() {
   renderer.setAnimationLoop(animate);
 }
 
-initMarsSim();
+initDuneSim();

@@ -1,6 +1,6 @@
-# Mars terrain simulation (Three.js WebGPU / WebGL)
+# Dune terrain simulation (Three.js WebGPU / WebGL)
 
-![Mars terrain simulation social preview](./og-image.png)
+![Dune terrain simulation social preview](./og-image.png)
 
 Real-time 3D simulation of Gale Crater and the Bagnold Dunes built with Three.js (`three/webgpu` and TSL node shaders), Vite, and `pnpm`. Every mesh, ripple normal, rock fracture, and atmospheric scattering gradient is generated mathematically in code with zero external models, textures, or HDRIs.
 
@@ -10,11 +10,11 @@ Real-time 3D simulation of Gale Crater and the Bagnold Dunes built with Three.js
 - `src/noise.js` implements a deterministic 32-bit PRNG (`mulberry32`), 2D/3D gradient-value noise, rotated multi-octave FBM, ridged multifractal noise, polynomial smooth-min/max (`smin`/`smax`), and the $C^1$-continuous asymmetric barchan dune profile.
 - `src/terrain.js` builds a radially warped `560x560` terrain mesh (`627,200` triangles) and attaches a custom TSL `MeshStandardNodeMaterial` with finite-difference normal perturbation, multi-scale aeolian ripple fields, and post-lighting aerial perspective.
 - `src/rocks.js` sculpts three indexed rock archetypes using 9 random fracture planes with beveled edges and places `1,920` instances across `65` geological float clusters via `THREE.InstancedMesh`.
-- `src/sky.js` provides a shared TSL atmospheric radiance function (`evalMarsAtmosphereRadiance`) used by both the sky dome and the terrain/rock post-lighting fog pass.
+- `src/sky.js` provides a shared TSL atmospheric radiance function (`evalDuneAtmosphereRadiance`) used by both the sky dome and the terrain/rock post-lighting fog pass.
 
 ## Procedural terrain generation
 
-The macro heightfield (`sampleMarsGeology` in `src/noise.js`) combines four spatial scales:
+The macro heightfield (`sampleDuneGeology` in `src/noise.js`) combines four spatial scales:
 
 1. Primary and oblique barchanoid dune trains (`evaluateBarchanDune`) with gentle windward ramps (`p < 0.68`), polynomial smooth-min rounded brinks (`k = 0.18`), and `31°` leeward avalanche slip-faces (`p ∈ [0.68, 0.98]`).
 2. Regional Murray/Stimson interdune bedrock exposures (`bedrockExposure`) forming low-relief flat rocky pavements (`±1.4m`) where wind has scoured away the active sand cover.
@@ -37,7 +37,7 @@ The viewport starts completely clean with no UI overlays or buttons. Press `TAB`
 - `TAB`: Show or hide the digital telemetry HUD and solar elevation control.
 - `W` `A` `S` `D` or `Arrow Keys`: Translate forward/backward and orbit left/right.
 - `Q` / `E`: Lower or raise camera altitude.
-- `1` - `6`: Smoothly fly the camera to the six Martian viewpoints and angles (`1:WIDE`, `2:DUNE`, `3:RIPPLES`, `4:RIDGE`, `5:ELEVATED`, `6:HORIZON`). Triggered only by the `1` through `6` keys.
+- `1` - `6`: Smoothly fly the camera to the six Dune viewpoints and angles (`1:WIDE`, `2:DUNE`, `3:RIPPLES`, `4:RIDGE`, `5:ELEVATED`, `6:HORIZON`). Triggered only by the `1` through `6` keys.
 - `-` / `+` (or `[` / `]`): Decrease or increase solar elevation continuously between `4°` and `85°` (also adjustable via the linear scale in the `TAB` HUD).
 - Mouse drag / scroll wheel: Orbit and zoom smoothly (`OrbitControls`), with subtle idle drift after `2.5s` of inactivity.
 

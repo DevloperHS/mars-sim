@@ -25,14 +25,14 @@ import {
   cameraPosition,
   vertexColor,
 } from 'three/tsl';
-import { sampleMarsSurfaceInfo, fbm2D } from './noise.js';
-import { evalMarsAtmosphereRadiance } from './sky.js';
+import { sampleDuneSurfaceInfo, fbm2D } from './noise.js';
+import { evalDuneAtmosphereRadiance } from './sky.js';
 
 /**
- * Generates a high-density variable-resolution procedural Martian terrain mesh
+ * Generates a high-density variable-resolution procedural Dune terrain mesh
  * with custom TSL node shader (compatible with both WebGPURenderer and WebGL backend).
  */
-export function createMarsTerrain(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform) {
+export function createDuneTerrain(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform) {
   const size = 1200;
   const segments = 560; // 560x560 = 313,600 quads (~627k triangles)
 
@@ -63,7 +63,7 @@ export function createMarsTerrain(sunDirUniform, fogHorizonColorUniform, fogZeni
       z *= scale;
     }
 
-    const info = sampleMarsSurfaceInfo(x, z, 0.5);
+    const info = sampleDuneSurfaceInfo(x, z, 0.5);
     posAttr.setXYZ(i, x, info.height, z);
 
     // Smooth cavity AO
@@ -132,7 +132,7 @@ export function createMarsTerrain(sunDirUniform, fogHorizonColorUniform, fogZeni
     const wXZ = xz.add(warpLarge);
     const phaseWarp = fbmShader(wXZ.mul(0.32).add(vec2(11.4, 27.8))).mul(2.2);
 
-    // 1. Megaripples (~1.85m wavelength, 3.4 rad/m) — clamped polynomial profile (NaN-proof in WGSL)
+    // 1. Megaripples (~1.85m wavelength, 3.4 rad/m) - clamped polynomial profile (NaN-proof in WGSL)
     const megaPhase = wXZ.x.mul(0.80).add(wXZ.y.mul(0.60)).mul(3.4).add(phaseWarp.mul(0.65));
     const megaSin = sin(megaPhase);
     const megaU = clamp(megaSin.add(sin(megaPhase.mul(2.0)).mul(0.24)).mul(0.42).add(0.5), 0.0, 1.0);
@@ -223,7 +223,7 @@ export function createMarsTerrain(sunDirUniform, fogHorizonColorUniform, fogZeni
     return normalize(vec3(perturbed.x, max(perturbed.y, float(0.28)), perturbed.z));
   })();
 
-  // Cohesive, realistic NASA Curiosity / Perseverance Martian palette (no camo contrast blotches!)
+  // Cohesive, realistic NASA Curiosity / Perseverance Dune palette (no camo contrast blotches!)
   const rustOchre = color(0xb35731);
   const burntTerracotta = color(0x994323);
   const dustyButterscotch = color(0xc97b4d);
@@ -305,7 +305,7 @@ export function createMarsTerrain(sunDirUniform, fogHorizonColorUniform, fogZeni
     const distFog = smoothstep(55.0, 640.0, dist);
     const fogFactor = clamp(distFog.mul(float(0.74).add(heightFactor.mul(0.26))), 0.0, 0.93);
 
-    const skyRad = evalMarsAtmosphereRadiance(
+    const skyRad = evalDuneAtmosphereRadiance(
       viewDir,
       sunDirUniform,
       fogHorizonColorUniform,

@@ -1,7 +1,7 @@
 {
-  "name": "Mars Terrain Simulation",
-  "short_name": "Mars Sim",
-  "description": "Real-time procedural Martian terrain simulation in Three.js (WebGPU + WebGL fallback).",
+  "name": "Dune Terrain Simulation",
+  "short_name": "Dune Sim",
+  "description": "Real-time procedural Dune terrain simulation in Three.js (WebGPU + WebGL fallback).",
   "start_url": "/",
   "display": "fullscreen",
   "background_color": "#1a0d08",

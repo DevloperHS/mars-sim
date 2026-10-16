@@ -21,11 +21,11 @@ import {
   normalWorld,
   cameraPosition,
 } from 'three/tsl';
-import { createRNG, noise3D, sampleMarsSurfaceInfo } from './noise.js';
-import { evalMarsAtmosphereRadiance } from './sky.js';
+import { createRNG, noise3D, sampleDuneSurfaceInfo } from './noise.js';
+import { evalDuneAtmosphereRadiance } from './sky.js';
 
 /**
- * Sculpt an indexed, angular wind-faceted Martian ventifact or stratified mudstone block.
+ * Sculpt an indexed, angular wind-faceted Dune ventifact or stratified mudstone block.
  * Uses plane-clipping + ridged 3D noise on an indexed SphereGeometry so rocks have
  * crisp angular geological faces with smooth vertex normals across shared vertices.
  */
@@ -62,7 +62,7 @@ function createSculptedRockGeometry(seedOffset, widthSegs = 28, heightSegs = 20,
 
     let r = 0.84 + n1 * 0.16 + (1.0 - Math.abs(n2)) * 0.10;
 
-    // Crisp bevel-clip radius against fracture planes for angular Martian ventifact morphology
+    // Crisp bevel-clip radius against fracture planes for angular Dune ventifact morphology
     for (let p = 0; p < planes.length; p++) {
       const pl = planes[p];
       const proj = nx * pl.nx + ny * pl.ny + nz * pl.nz;
@@ -98,10 +98,10 @@ function createSculptedRockGeometry(seedOffset, widthSegs = 28, heightSegs = 20,
 }
 
 /**
- * Generates geologically clustered Martian boulders, fractured bedrock slabs, and cobble lag
+ * Generates geologically clustered Dune boulders, fractured bedrock slabs, and cobble lag
  * concentrated in interdune troughs, bedrock pavements, and rocky talus aprons.
  */
-export function createMarsRocks(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform) {
+export function createDuneRocks(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform) {
   const rng = createRNG(90210);
   const group = new THREE.Group();
 
@@ -143,8 +143,8 @@ export function createMarsRocks(sunDirUniform, fogHorizonColorUniform, fogZenith
     );
   })();
 
-  // Cohesive Martian basalt & oxidized mudstone rock palette (no spotted leopard/sponge contrast!)
-  const darkBasalt = color(0x4d3429);      // Weathered dark grey-brown Martian basalt
+  // Cohesive Dune basalt & oxidized mudstone rock palette (no spotted leopard/sponge contrast!)
+  const darkBasalt = color(0x4d3429);      // Weathered dark grey-brown Dune basalt
   const weatheredRind = color(0x754530);   // Oxidized iron-bearing rock rind
   const settledDust = color(0xb5673f);     // Fine ferric dust coat on upward-facing facets
 
@@ -170,7 +170,7 @@ export function createMarsRocks(sunDirUniform, fogHorizonColorUniform, fogZenith
     const distFog = smoothstep(55.0, 640.0, dist);
     const fogFactor = clamp(distFog.mul(float(0.74).add(heightFactor.mul(0.26))), 0.0, 0.93);
 
-    const skyRad = evalMarsAtmosphereRadiance(
+    const skyRad = evalDuneAtmosphereRadiance(
       viewDir,
       sunDirUniform,
       fogHorizonColorUniform,
@@ -195,7 +195,7 @@ export function createMarsRocks(sunDirUniform, fogHorizonColorUniform, fogZenith
     const cx = Math.cos(theta) * radius;
     const cz = Math.sin(theta) * radius;
 
-    const info = sampleMarsSurfaceInfo(cx, cz, 0.5);
+    const info = sampleDuneSurfaceInfo(cx, cz, 0.5);
     if (info.activeSandCover > 0.85 && rng() > 0.22) continue;
     clusterCenters.push({ x: cx, z: cz, spread: 3.5 + rng() * 9.5 });
   }
@@ -239,7 +239,7 @@ export function createMarsRocks(sunDirUniform, fogHorizonColorUniform, fogZenith
         z = Math.sin(theta) * radius;
       }
 
-      const info = sampleMarsSurfaceInfo(x, z, 0.45);
+      const info = sampleDuneSurfaceInfo(x, z, 0.45);
 
       if (info.slipFaceFactor > 0.35 && aIdx < 2) continue;
       if (info.curvature > 0.12 && rng() > 0.15) continue;

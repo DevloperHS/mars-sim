@@ -23,10 +23,10 @@ import {
 } from 'three/tsl';
 
 /**
- * Shared TSL helper: evaluates exact Martian atmospheric sky / aerial perspective radiance
+ * Shared TSL helper: evaluates exact Dune atmospheric sky / aerial perspective radiance
  * along any world-space view direction `viewDir` (unit vector from camera toward pixel).
  */
-export function evalMarsAtmosphereRadiance(viewDir, sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform, includeSolarDisc = true) {
+export function evalDuneAtmosphereRadiance(viewDir, sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform, includeSolarDisc = true) {
   const elevation = clamp(viewDir.y, 0.0, 1.0);
 
   // Vertical dust aerosol gradient: luminous salmon-butterscotch horizon -> warm rust-sienna zenith
@@ -50,7 +50,7 @@ export function evalMarsAtmosphereRadiance(viewDir, sunDirUniform, fogHorizonCol
     .add(aureoleColor.mul(innerAureole));
 
   if (includeSolarDisc) {
-    // Authentic small Martian solar disc (~0.35 deg angular diameter)
+    // Authentic small Dune solar disc (~0.35 deg angular diameter)
     const sunDisc = smoothstep(0.99994, 0.999985, cosTheta).mul(5.5);
     const discColor = color(0xfff9f0);
     finalRad = finalRad.add(discColor.mul(sunDisc));
@@ -60,9 +60,9 @@ export function evalMarsAtmosphereRadiance(viewDir, sunDirUniform, fogHorizonCol
 }
 
 /**
- * Procedural Martian Atmosphere Sky Dome
+ * Procedural Dune Atmosphere Sky Dome
  */
-export function createMarsSky(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform) {
+export function createDuneSky(sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform) {
   const skyGeo = new THREE.SphereGeometry(1800, 96, 64);
   const skyMat = new THREE.MeshBasicNodeMaterial();
   skyMat.side = THREE.BackSide;
@@ -70,7 +70,7 @@ export function createMarsSky(sunDirUniform, fogHorizonColorUniform, fogZenithCo
 
   skyMat.colorNode = Fn(() => {
     const viewDir = normalize(positionWorld.sub(cameraPosition));
-    return evalMarsAtmosphereRadiance(viewDir, sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform, true);
+    return evalDuneAtmosphereRadiance(viewDir, sunDirUniform, fogHorizonColorUniform, fogZenithColorUniform, true);
   })();
 
   const skyMesh = new THREE.Mesh(skyGeo, skyMat);
